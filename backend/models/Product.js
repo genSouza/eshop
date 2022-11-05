@@ -42,7 +42,7 @@ const productSchema = mongoose.Schema({
     default: 0,
   },
   numberOfReviews: {
-    type: NUmber,
+    type: Number,
     default: 0,
   },
   isFeatured: {
