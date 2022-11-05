@@ -47,6 +47,28 @@ router.post("/", async (req, res) => {
   }
 });
 
+router.put("/:id", async (req, res) => {
+  try {
+    const result = await Category.findByIdAndUpdate(
+      req.params.id.toString().trim(),
+      {
+        name: req.body.name,
+        color: req.body.color,
+        icon: req.body.icon,
+        image: req.body.image,
+      },
+      { new: true }
+    );
+    if (result) {
+      res.status(200).json({ success: true, result: result });
+    } else {
+      res.status(404).json({ success: false, message: "Id not found" });
+    }
+  } catch (error) {
+    res.status(500).json({ success: false, error: error });
+  }
+});
+
 router.delete("/:id", async (req, res) => {
   try {
     const result = await Category.findByIdAndRemove(
