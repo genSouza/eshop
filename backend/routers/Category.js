@@ -16,6 +16,20 @@ router.get("/", async (req, res) => {
   }
 });
 
+router.get("/:id", async (req, res) => {
+  try {
+    const result = await Category.findById(req.params.id.toString().trim());
+    if (result) {
+      res.status(200).json({ success: true, result: result });
+    } else {
+      res.status(404).json({ success: false, message: "id not found" });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, error: error });
+  }
+});
+
 router.post("/", async (req, res) => {
   try {
     const category = new Category({
