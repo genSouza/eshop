@@ -5,7 +5,7 @@ const router = express.Router();
 
 router.get(`/`, async (req, res) => {
   try {
-    const productList = await Product.find();
+    const productList = await Product.find().populate('category');
 
     if (productList.length != 0) {
       res.status(200).json({ success: true, result: productList });
@@ -19,7 +19,7 @@ router.get(`/`, async (req, res) => {
 
 router.get(`/:id`, async (req, res) => {
   try {
-    const result = await Product.findById(req.params.id.toString().trim());
+    const result = await Product.findById(req.params.id.toString().trim()).populate('category');
 
     if (result) {
       res.status(200).json({ success: true, result: result });
