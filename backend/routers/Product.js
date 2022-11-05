@@ -5,7 +5,7 @@ const router = express.Router();
 
 router.get(`/`, async (req, res) => {
   try {
-    const productList = await Product.find().populate('category');
+    const productList = await Product.find().populate("category");
 
     if (productList.length != 0) {
       res.status(200).json({ success: true, result: productList });
@@ -19,7 +19,9 @@ router.get(`/`, async (req, res) => {
 
 router.get(`/:id`, async (req, res) => {
   try {
-    const result = await Product.findById(req.params.id.toString().trim()).populate('category');
+    const result = await Product.findById(
+      req.params.id.toString().trim()
+    ).populate("category");
 
     if (result) {
       res.status(200).json({ success: true, result: result });
@@ -59,6 +61,41 @@ router.post(`/`, async (req, res) => {
     if (result) {
       res.status(201).json({ success: true, result: result });
     }
+  } catch (error) {
+    res.status(500).json({ success: false, error: error });
+  }
+});
+
+router.put("/:id", async (req, res) => {
+  try {
+    const category = await Category.findById(req.body.category);
+
+    if (!category) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Invalid category" });
+    }
+
+    const result = await Product.findByIdAndUpdate(
+      req.params.id.toString().trim(),
+      {
+        name: req.body.name,
+        description: req.body.description,
+        richDescription: req.body.richDescription,
+        image: req.body.image,
+        images: req.body.images,
+        price: req.body.price,
+        category: req.body.category,
+        countInStock: req.body.countInStock,
+        rating: req.body.rating,
+        numberOfReviews: req.body.numberOfReviews,
+        isFeatured: req.body.isFeatured,
+        dateCreated: req.body.dateCreated,
+      },
+      { new: true }
+    );
+
+    res.status(200).json({ success: true, result: result });
   } catch (error) {
     res.status(500).json({ success: false, error: error });
   }
