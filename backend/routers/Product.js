@@ -38,6 +38,16 @@ router.get(`/:id`, async (req, res) => {
   }
 });
 
+router.get("/get/count", async (req, res) => {
+  try {
+    const productCount = await Product.countDocuments();
+    res.status(200).json({ success: true, result: productCount });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ success: false, message: err });
+  }
+});
+
 router.post(`/`, async (req, res) => {
   try {
     const category = await Category.findById(req.body.category);
