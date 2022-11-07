@@ -1,5 +1,6 @@
 const { Product } = require("../models/Product");
 const { Category } = require("../models/Category");
+const { isValidID } = require("../utils/Utility");
 const express = require("express");
 const router = express.Router();
 
@@ -19,6 +20,10 @@ router.get(`/`, async (req, res) => {
 
 router.get(`/:id`, async (req, res) => {
   try {
+    const check = isValidID(req.params.id.toString().trim());
+    if (!check) {
+      res.status(404).json({ success: false, message: "Id not valid" });
+    }
     const result = await Product.findById(
       req.params.id.toString().trim()
     ).populate("category");
@@ -98,6 +103,25 @@ router.put("/:id", async (req, res) => {
     res.status(200).json({ success: true, result: result });
   } catch (error) {
     res.status(500).json({ success: false, error: error });
+  }
+});
+
+router.delete("/:id", async (req, res) => {
+  try {
+    const check = isValidID(req.params.id.toString().trim());
+    if (!check) {
+      res.status(404).json({ success: false, message: "Id not valid" });
+    }
+    const result = await Product.findByIdAndRemove(
+      req.params.id.toString().trim()
+    );
+    if (result) {
+      res.status(200).json({ success: true, message: "product was deleted" });
+    } else {
+      res.status(404).json({ success: false, message: "id not found" });
+    }
+  } catch (err) {
+    res.status(500).json({ success: false, message: err });
   }
 });
 
