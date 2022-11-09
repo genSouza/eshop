@@ -48,6 +48,17 @@ router.get("/get/count", async (req, res) => {
   }
 });
 
+router.get("/get/featured/:count", async (req, res) => {
+  try {
+    const count = req.params.count ? req.params.count : 0
+    const productList = await Product.find({ isFeatured: true }).limit(+count);
+    res.status(200).json({ success: true, result: productList });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ success: false, message: err });
+  }
+});
+
 router.post(`/`, async (req, res) => {
   try {
     const category = await Category.findById(req.body.category);
