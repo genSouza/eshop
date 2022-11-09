@@ -17,8 +17,8 @@ router.get(`/`, async (req, res) => {
     } else {
       res.status(200).json({ success: true, result: [] });
     }
-  } catch (error) {
-    res.status(500).json({ success: false, error: error });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err });
   }
 });
 
