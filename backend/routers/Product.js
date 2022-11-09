@@ -6,7 +6,11 @@ const router = express.Router();
 
 router.get(`/`, async (req, res) => {
   try {
-    const productList = await Product.find().populate("category");
+    let filter = {};
+    if (req.query.categories) {
+      filter = { category: req.query.categories.split(",") };
+    }
+    const productList = await Product.find(filter).populate("category");
 
     if (productList.length != 0) {
       res.status(200).json({ success: true, result: productList });
@@ -50,7 +54,7 @@ router.get("/get/count", async (req, res) => {
 
 router.get("/get/featured/:count", async (req, res) => {
   try {
-    const count = req.params.count ? req.params.count : 0
+    const count = req.params.count ? req.params.count : 0;
     const productList = await Product.find({ isFeatured: true }).limit(+count);
     res.status(200).json({ success: true, result: productList });
   } catch (err) {
