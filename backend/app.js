@@ -8,6 +8,7 @@ const port = process.env.APP_PORT;
 const api = process.env.API_URL;
 const productsRouter = require("./routers/Product");
 const categoryRouter = require("./routers/Category");
+const userRouter = require('./routers/User');
 
 app.use(cors());
 app.options("*", cors());
@@ -15,6 +16,8 @@ app.use(express.json());
 app.use(morgan("tiny"));
 app.use(`${api}/products`, productsRouter);
 app.use(`${api}/categories`, categoryRouter);
+app.use(`${api}/users`, userRouter);
+
 mongoose
   .connect(process.env.CONNECTION_STRING)
   .then(() => {

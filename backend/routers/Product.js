@@ -27,6 +27,7 @@ router.get(`/:id`, async (req, res) => {
     const check = isValidID(req.params.id.toString().trim());
     if (!check) {
       res.status(404).json({ success: false, message: "Id not valid" });
+      return;
     }
     const result = await Product.findById(
       req.params.id.toString().trim()
