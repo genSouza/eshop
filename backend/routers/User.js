@@ -132,7 +132,7 @@ router.post("/login", async (req, res) => {
     const token = jwt.sign(
       {
         userId: user.id,
-        isAdmin: user.isAdmin
+        isAdmin: user.isAdmin,
       },
       secret,
       { expiresIn: "1d" }
@@ -140,6 +140,30 @@ router.post("/login", async (req, res) => {
     return res.status(200).send({ user: user.email, token: token });
   } else {
     return res.status(400).send("Invalid user or password");
+  }
+});
+
+router.get("/get/count", async (req, res) => {
+  try {
+    const productCount = await User.countDocuments();
+    res.status(200).json({ success: true, result: productCount });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err });
+  }
+});
+
+router.delete("/:id", async (req, res) => {
+  try {
+    const result = await User.findByIdAndRemove(
+      req.params.id.toString().trim()
+    );
+    if (result) {
+      res.status(200).json({ success: true, message: "user deleted" });
+    } else {
+      res.status(404).json({ success: false, message: "id not found" });
+    }
+  } catch (error) {
+    res.status(500).json({ success: false, error: error });
   }
 });
 
