@@ -1,9 +1,11 @@
-const { User } = require("../models/User");
+require("dotenv/config");
 const { isValidID } = require("../utils/Utility");
+const { User } = require("../models/User");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 const express = require("express");
 const router = express.Router();
-
+const secret = process.env.SECRET;
 router.get("/", async (req, res) => {
   try {
     const userList = await User.find().select([
@@ -116,6 +118,27 @@ router.put("/:id", async (req, res) => {
     }
   } catch (error) {
     res.status(500).json({ success: false, error: error });
+  }
+});
+
+router.post("/login", async (req, res) => {
+  if (!req.body.email || !req.body.password) {
+    return res.status(400).send("password and email are required");
+  }
+
+  const user = await User.findOne({ email: req.body.email });
+
+  if (user && bcrypt.compareSync(req.body.password, user.password)) {
+    const token = jwt.sign(
+      {
+        userId: user.id,
+      },
+      secret,
+      { expiresIn: "1d" }
+    );
+    return res.status(200).send({ user: user.email, token: token });
+  } else {
+    return res.status(400).send("Invalid user or password");
   }
 });
 
