@@ -9,11 +9,17 @@ const api = process.env.API_URL;
 const productsRouter = require("./routers/Product");
 const categoryRouter = require("./routers/Category");
 const userRouter = require('./routers/User');
+const authJwt = require("./utils/Jwt");
+
 
 app.use(cors());
 app.options("*", cors());
 app.use(express.json());
+
+/**Middleware */
 app.use(morgan("tiny"));
+app.use(authJwt());
+
 app.use(`${api}/products`, productsRouter);
 app.use(`${api}/categories`, categoryRouter);
 app.use(`${api}/users`, userRouter);
